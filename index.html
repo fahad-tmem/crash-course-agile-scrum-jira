@@ -240,24 +240,36 @@ Then I should see a confirmation message.</code></pre>
         <section id="workflow" class="py-16 scroll-mt-16 bg-slate-50 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <h3 class="text-2xl md:text-3xl font-bold text-slate-900">Part 4: The Basic Workflow</h3>
-                <p class="mt-3 max-w-2xl mx-auto text-md text-slate-600">Our Jira board provides a visual overview of our sprint's progress. The goal is to move all work from "To Do" to "Done" within the sprint.</p>
+                <p class="mt-3 max-w-2xl mx-auto text-md text-slate-600">Our Jira board provides a visual overview of our sprint's progress. The goal is to move all work from "New" to "Verified/Done" within the sprint.</p>
             </div>
             <div class="mt-12">
                 <div class="chart-container">
                     <canvas id="workflowChart"></canvas>
                 </div>
-                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
                     <div class="bg-white p-4 rounded-lg shadow-sm">
-                        <h4 class="font-semibold text-lg text-red-600">To Do</h4>
-                        <p class="mt-1 text-sm text-slate-600">Work planned for the sprint but not yet started.</p>
+                        <h4 class="font-semibold text-lg text-slate-600">New</h4>
+                        <p class="mt-1 text-sm text-slate-600">Work planned but not yet started.</p>
                     </div>
                     <div class="bg-white p-4 rounded-lg shadow-sm">
-                        <h4 class="font-semibold text-lg text-yellow-600">In Progress</h4>
-                        <p class="mt-1 text-sm text-slate-600">An issue that a team member is actively working on.</p>
+                        <h4 class="font-semibold text-lg text-yellow-600">In-Progress</h4>
+                        <p class="mt-1 text-sm text-slate-600">Actively being worked on by a team member.</p>
                     </div>
                     <div class="bg-white p-4 rounded-lg shadow-sm">
-                        <h4 class="font-semibold text-lg text-green-600">Done</h4>
-                        <p class="mt-1 text-sm text-slate-600">Work that is 100% complete, tested, and meets all requirements.</p>
+                        <h4 class="font-semibold text-lg text-blue-600">In-Review</h4>
+                        <p class="mt-1 text-sm text-slate-600">Completed work pending a peer code review.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-semibold text-lg text-purple-600">Ready for Testing</h4>
+                        <p class="mt-1 text-sm text-slate-600">Work is ready for the QA team to begin testing.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-semibold text-lg text-orange-600">In-Testing</h4>
+                        <p class="mt-1 text-sm text-slate-600">Currently being tested by the QA team.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-semibold text-lg text-green-600">Verified/Done</h4>
+                        <p class="mt-1 text-sm text-slate-600">Work is complete, tested, and meets all requirements.</p>
                     </div>
                 </div>
             </div>
@@ -388,22 +400,43 @@ Then I should see a confirmation message.</code></pre>
                     labels: ['Our Sprint Goal'],
                     datasets: [
                         {
-                            label: 'To Do',
-                            data: [35],
-                            backgroundColor: 'rgba(239, 68, 68, 0.7)',
-                            borderColor: 'rgba(239, 68, 68, 1)',
+                            label: 'New',
+                            data: [10],
+                            backgroundColor: 'rgba(100, 116, 139, 0.7)',
+                            borderColor: 'rgba(100, 116, 139, 1)',
                             borderWidth: 1
                         },
                         {
-                            label: 'In Progress',
-                            data: [40],
+                            label: 'In-Progress',
+                            data: [30],
                             backgroundColor: 'rgba(251, 191, 36, 0.7)',
                             borderColor: 'rgba(251, 191, 36, 1)',
                             borderWidth: 1
                         },
                         {
-                            label: 'Done',
-                            data: [25],
+                            label: 'In-Review',
+                            data: [15],
+                            backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        },
+                         {
+                            label: 'Ready for Testing',
+                            data: [10],
+                            backgroundColor: 'rgba(147, 51, 234, 0.7)',
+                            borderColor: 'rgba(147, 51, 234, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'In-Testing',
+                            data: [15],
+                            backgroundColor: 'rgba(249, 115, 22, 0.7)',
+                            borderColor: 'rgba(249, 115, 22, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Verified/Done',
+                            data: [20],
                             backgroundColor: 'rgba(34, 197, 94, 0.7)',
                             borderColor: 'rgba(34, 197, 94, 1)',
                             borderWidth: 1
@@ -420,7 +453,7 @@ Then I should see a confirmation message.</code></pre>
                         },
                         title: {
                             display: true,
-                            text: 'Visualizing Progress: From To Do to Done'
+                            text: 'Visualizing Progress: From New to Done'
                         },
                         tooltip: {
                             callbacks: {
@@ -456,3 +489,4 @@ Then I should see a confirmation message.</code></pre>
     </script>
 </body>
 </html>
+

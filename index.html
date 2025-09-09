@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide to Agile, Scrum & Jira</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral (Slate background, Blue accent) -->
+    <!-- Application Structure Plan: A single-page app with sticky navigation to four thematic sections: 1. Concepts (interactive cards), 2. Issue Hierarchy (visual diagram with clickable elements), 3. Writing Issues (tabbed templates), and 4. Workflow (visual chart). This structure transforms a linear guide into an engaging, non-linear learning tool, allowing users to explore topics based on their immediate needs, which is more effective for training and reference. -->
+    <!-- Visualization & Content Choices: 1. Scrum Roles/Events: HTML cards + JS toggle -> Inform -> Interactive reveal for focused learning. 2. Issue Hierarchy: Nested HTML divs -> Organize -> Visual representation of relationships, more intuitive than text. 3. Issue Templates: Tabbed HTML content -> Inform/Organize -> Practical, task-oriented 'cheat sheet' format. 4. Workflow: Chart.js Bar Chart -> Change/Process -> Visual metaphor for progress, easier to grasp than a list. CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .active-nav {
+            color: #2563eb; /* blue-600 */
+            border-bottom-color: #2563eb;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 200px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl md:text-2xl font-bold text-slate-900">Agile & Jira Guide</h1>
+                <div class="hidden sm:flex sm:space-x-8">
+                    <a href="#concepts" class="nav-link border-b-2 border-transparent py-2 text-sm font-medium text-slate-600 hover:text-blue-600 hover:border-blue-600">Core Concepts</a>
+                    <a href="#hierarchy" class="nav-link border-b-2 border-transparent py-2 text-sm font-medium text-slate-600 hover:text-blue-600 hover:border-blue-600">Jira Issue Types</a>
+                    <a href="#writing" class="nav-link border-b-2 border-transparent py-2 text-sm font-medium text-slate-600 hover:text-blue-600 hover:border-blue-600">Writing Great Issues</a>
+                    <a href="#workflow" class="nav-link border-b-2 border-transparent py-2 text-sm font-medium text-slate-600 hover:text-blue-600 hover:border-blue-600">Workflow</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="intro" class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">A Crash Course in Agile, Scrum, and Jira</h2>
+            <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">An interactive guide to help your team master the essentials of modern software development workflow. Use the navigation above to jump to a section.</p>
+        </section>
+
+        <section id="concepts" class="py-16 scroll-mt-16">
+            <div class="text-center">
+                <h3 class="text-2xl md:text-3xl font-bold text-slate-900">Part 1: The Core Concepts</h3>
+                <p class="mt-3 max-w-2xl mx-auto text-md text-slate-600">Before diving into Jira, it's crucial to understand the "why". This section breaks down the foundational ideas of Agile and the Scrum framework.</p>
+            </div>
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h4 class="text-xl font-semibold text-blue-700">Agile: The Mindset</h4>
+                    <p class="mt-2 text-slate-600">Agile is not a strict process, but a philosophy for building products. It values adaptability and collaboration over rigid planning.</p>
+                    <ul class="mt-4 space-y-3 text-sm">
+                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">&#10004;</span><strong>Iterative Development:</strong> Build and release in small, frequent cycles (sprints).</li>
+                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">&#10004;</span><strong>Collaboration:</strong> Daily interaction between the team and stakeholders.</li>
+                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">&#10004;</span><strong>Responding to Change:</strong> Welcome changing requirements, even late in development.</li>
+                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">&#10004;</span><strong>Focus on Value:</strong> Prioritize delivering working, valuable software frequently.</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h4 class="text-xl font-semibold text-teal-700">Scrum: The Framework</h4>
+                    <p class="mt-2 text-slate-600">Scrum is a practical framework for implementing the Agile mindset. It provides a structured set of roles and events to manage work.</p>
+                    <div class="mt-4">
+                        <h5 class="font-semibold text-slate-700">Key Roles:</h5>
+                        <div class="mt-2 space-y-2 text-sm">
+                            <details class="bg-slate-50 p-2 rounded-md cursor-pointer"><summary class="font-medium">Product Owner</summary><p class="mt-1 pl-4 text-slate-600">Decides *what* to build by managing the Product Backlog.</p></details>
+                            <details class="bg-slate-50 p-2 rounded-md cursor-pointer"><summary class="font-medium">Scrum Master</summary><p class="mt-1 pl-4 text-slate-600">Facilitates the process and removes blockers for the team.</p></details>
+                            <details class="bg-slate-50 p-2 rounded-md cursor-pointer"><summary class="font-medium">Development Team</summary><p class="mt-1 pl-4 text-slate-600">Decides *how* to build the product and does the work.</p></details>
+                        </div>
+                        <h5 class="font-semibold text-slate-700 mt-4">Key Events (Ceremonies):</h5>
+                         <div class="mt-2 space-y-2 text-sm">
+                            <details class="bg-slate-50 p-2 rounded-md cursor-pointer"><summary class="font-medium">The Sprint</summary><p class="mt-1 pl-4 text-slate-600">A 2-4 week timebox where a shippable increment of work is created.</p></details>
+                            <details class="bg-slate-50 p-2 rounded-md cursor-pointer"><summary class="font-medium">Sprint Planning</summary><p class="mt-1 pl-4 text-slate-600">Team selects work from the backlog for the upcoming Sprint.</p></details>
+                             <details class="bg-slate-50 p-2 rounded-md cursor-pointer"><summary class="font-medium">Daily Stand-up</summary><p class="mt-1 pl-4 text-slate-600">A 15-min daily sync to discuss progress and impediments.</p></details>
+                            <details class="bg-slate-50 p-2 rounded-md cursor-pointer"><summary class="font-medium">Sprint Review</summary><p class="mt-1 pl-4 text-slate-600">Team demonstrates completed work to stakeholders.</p></details>
+                            <details class="bg-slate-50 p-2 rounded-md cursor-pointer"><summary class="font-medium">Sprint Retrospective</summary><p class="mt-1 pl-4 text-slate-600">Team reflects on the sprint to identify improvements.</p></details>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="hierarchy" class="py-16 scroll-mt-16 bg-slate-50 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-2xl md:text-3xl font-bold text-slate-900">Part 2: Jira Issue Types - The Hierarchy</h3>
+                <p class="mt-3 max-w-2xl mx-auto text-md text-slate-600">Jira organizes work into different "issue types". Understanding their hierarchy is key to a well-structured project. Click on an issue type below to see its details.</p>
+            </div>
+            <div class="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1 space-y-4">
+                    <div id="hierarchy-epic" class="hierarchy-item p-4 border-2 border-purple-500 bg-white rounded-lg cursor-pointer hover:shadow-lg transition">
+                        <h4 class="font-bold text-lg text-purple-700">Epic</h4>
+                        <p class="text-sm text-slate-500">The Big Goal</p>
+                    </div>
+                    <div class="pl-6">
+                        <div id="hierarchy-story" class="hierarchy-item p-4 border-2 border-blue-500 bg-white rounded-lg cursor-pointer hover:shadow-lg transition">
+                            <h4 class="font-bold text-lg text-blue-700">Story</h4>
+                            <p class="text-sm text-slate-500">The User Requirement</p>
+                        </div>
+                        <div class="pl-6 mt-4">
+                            <div id="hierarchy-subtask" class="hierarchy-item p-3 border-2 border-gray-400 bg-white rounded-lg cursor-pointer hover:shadow-lg transition">
+                                <h4 class="font-bold text-md text-gray-700">Sub-task</h4>
+                                <p class="text-sm text-slate-500">The Granular Step</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div id="hierarchy-task" class="hierarchy-item p-4 border-2 border-green-500 bg-white rounded-lg cursor-pointer hover:shadow-lg transition mt-6">
+                        <h4 class="font-bold text-lg text-green-700">Task</h4>
+                        <p class="text-sm text-slate-500">A Standalone To-Do</p>
+                    </div>
+                     <div id="hierarchy-bug" class="hierarchy-item p-4 border-2 border-red-500 bg-white rounded-lg cursor-pointer hover:shadow-lg transition">
+                        <h4 class="font-bold text-lg text-red-700">Bug</h4>
+                        <p class="text-sm text-slate-500">A Problem or Defect</p>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-inner">
+                    <div id="hierarchy-details">
+                        <p class="text-slate-500 text-center pt-16">Select an issue type on the left to learn more.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="writing" class="py-16 scroll-mt-16">
+            <div class="text-center">
+                <h3 class="text-2xl md:text-3xl font-bold text-slate-900">Part 3: Writing Great Issues</h3>
+                <p class="mt-3 max-w-2xl mx-auto text-md text-slate-600">Clear, well-written issues prevent confusion and save time. Use these templates as a guide for creating effective tickets in Jira.</p>
+            </div>
+            <div class="mt-12">
+                <div class="flex justify-center border-b border-slate-200">
+                    <button data-target="template-story" class="issue-tab-btn px-4 py-2 font-medium text-sm border-b-2 border-blue-500 text-blue-600">User Story</button>
+                    <button data-target="template-bug" class="issue-tab-btn px-4 py-2 font-medium text-sm border-b-2 border-transparent text-slate-500 hover:text-blue-600">Bug</button>
+                    <button data-target="template-task" class="issue-tab-btn px-4 py-2 font-medium text-sm border-b-2 border-transparent text-slate-500 hover:text-blue-600">Task</button>
+                    <button data-target="template-epic" class="issue-tab-btn px-4 py-2 font-medium text-sm border-b-2 border-transparent text-slate-500 hover:text-blue-600">Epic</button>
+                </div>
+                <div class="mt-8">
+                    <div id="template-story" class="issue-template space-y-4">
+                        <h4 class="text-xl font-semibold text-blue-700">Template: User Story</h4>
+                        <div class="p-4 bg-white rounded-lg border">
+                            <p class="font-semibold">Summary (Title)</p>
+                            <p class="mt-1 text-sm bg-slate-100 p-2 rounded">As a &lt;user type&gt;, I want &lt;to perform an action&gt;, so that &lt;I can achieve a goal&gt;.</p>
+                            <p class="mt-2 text-xs text-slate-500">Example: As a registered user, I want to reset my password, so that I can regain access to my account.</p>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg border">
+                            <p class="font-semibold">Acceptance Criteria (AC)</p>
+                            <p class="text-sm text-slate-600 mt-1">This is a critical checklist that defines "Done". Use the Given/When/Then format for clarity.</p>
+                            <pre class="mt-2 text-xs bg-slate-800 text-white p-3 rounded-md overflow-x-auto"><code>Scenario: User enters a valid email
+Given I am on the "Forgot Password" page
+When I enter my registered email address and click "Submit"
+Then I should see a confirmation message.</code></pre>
+                        </div>
+                    </div>
+                    <div id="template-bug" class="issue-template hidden space-y-4">
+                         <h4 class="text-xl font-semibold text-red-700">Template: Bug Report</h4>
+                         <div class="p-4 bg-white rounded-lg border">
+                            <p class="font-semibold">Summary (Title)</p>
+                            <p class="mt-1 text-sm bg-slate-100 p-2 rounded">[Area of App] - Brief description of the problem.</p>
+                            <p class="mt-2 text-xs text-slate-500">Example: [Checkout Page] - "Complete Purchase" button is disabled after entering valid card info.</p>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg border grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="font-semibold">Steps to Reproduce</p>
+                                <ol class="list-decimal list-inside text-sm mt-1 text-slate-600">
+                                    <li>Navigate to the shopping cart.</li>
+                                    <li>Click "Checkout".</li>
+                                    <li>Enter valid shipping and payment info.</li>
+                                    <li>Observe the "Complete Purchase" button.</li>
+                                </ol>
+                            </div>
+                            <div>
+                                <p class="font-semibold">Expected vs. Actual</p>
+                                <p class="text-sm mt-1"><strong class="text-green-600">Expected:</strong> Button becomes active.</p>
+                                <p class="text-sm"><strong class="text-red-600">Actual:</strong> Button remains disabled.</p>
+                                <p class="font-semibold mt-2">Environment</p>
+                                <p class="text-sm mt-1 text-slate-600">Browser: Chrome v105, OS: Windows 11</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div id="template-task" class="issue-template hidden space-y-4">
+                        <h4 class="text-xl font-semibold text-green-700">Template: Task</h4>
+                        <div class="p-4 bg-white rounded-lg border">
+                            <p class="font-semibold">Summary (Title)</p>
+                            <p class="mt-1 text-sm bg-slate-100 p-2 rounded">Be direct and action-oriented.</p>
+                            <p class="mt-2 text-xs text-slate-500">Example: Upgrade the production server to version 2.5</p>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg border">
+                            <p class="font-semibold">Description</p>
+                            <ul class="list-disc list-inside text-sm mt-1 space-y-1 text-slate-600">
+                                <li><strong>Why:</strong> Explain the reason for the task.</li>
+                                <li><strong>What:</strong> Provide a clear list of steps or requirements.</li>
+                                <li><strong>Definition of Done:</strong> How will we know this is complete? (e.g., Server is running v2.5 with no errors for 1 hour).</li>
+                            </ul>
+                        </div>
+                    </div>
+                     <div id="template-epic" class="issue-template hidden space-y-4">
+                        <h4 class="text-xl font-semibold text-purple-700">Template: Epic</h4>
+                        <div class="p-4 bg-white rounded-lg border">
+                            <p class="font-semibold">Summary (Title)</p>
+                            <p class="mt-1 text-sm bg-slate-100 p-2 rounded">A clear, high-level name for a large feature.</p>
+                            <p class="mt-2 text-xs text-slate-500">Example: User Profile Management</p>
+                        </div>
+                        <div class="p-4 bg-white rounded-lg border">
+                            <p class="font-semibold">Description</p>
+                             <ul class="list-disc list-inside text-sm mt-1 space-y-1 text-slate-600">
+                                <li><strong>Goal:</strong> Briefly explain the business objective. What problem are we solving?</li>
+                                <li><strong>Scope:</strong> List the high-level features or User Stories that will be part of this Epic.</li>
+                                <li><strong>Out of Scope (Optional):</strong> What are we explicitly not doing?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="workflow" class="py-16 scroll-mt-16 bg-slate-50 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="text-2xl md:text-3xl font-bold text-slate-900">Part 4: The Basic Workflow</h3>
+                <p class="mt-3 max-w-2xl mx-auto text-md text-slate-600">Our Jira board provides a visual overview of our sprint's progress. The goal is to move all work from "To Do" to "Done" within the sprint.</p>
+            </div>
+            <div class="mt-12">
+                <div class="chart-container">
+                    <canvas id="workflowChart"></canvas>
+                </div>
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-semibold text-lg text-red-600">To Do</h4>
+                        <p class="mt-1 text-sm text-slate-600">Work planned for the sprint but not yet started.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-semibold text-lg text-yellow-600">In Progress</h4>
+                        <p class="mt-1 text-sm text-slate-600">An issue that a team member is actively working on.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-semibold text-lg text-green-600">Done</h4>
+                        <p class="mt-1 text-sm text-slate-600">Work that is 100% complete, tested, and meets all requirements.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="text-center py-8 border-t border-slate-200">
+        <p class="text-sm text-slate-500">Welcome to the team, and let's get building!</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section[id]');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active-nav');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active-nav');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: '-50% 0px -50% 0px' });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            const hierarchyItems = document.querySelectorAll('.hierarchy-item');
+            const detailsPane = document.getElementById('hierarchy-details');
+            
+            const hierarchyDetailsContent = {
+                'hierarchy-epic': {
+                    title: 'Epic',
+                    color: 'text-purple-700',
+                    content: `An Epic represents a large body of work or a major feature that is too big to be completed in a single sprint. It's used to group related User Stories.`,
+                    analogy: 'If our project is a book, an Epic is a **Chapter**.',
+                    example: 'User Account Management, Shopping Cart & Checkout Process'
+                },
+                'hierarchy-story': {
+                    title: 'User Story',
+                    color: 'text-blue-700',
+                    content: 'A User Story is a specific feature or requirement told from the perspective of the end-user. Stories are the primary items we work on in a Sprint.',
+                    analogy: 'A Story is a **Page or Paragraph** within a chapter.',
+                    example: 'As a user, I want to log in with my email and password so that I can access my account.'
+                },
+                'hierarchy-subtask': {
+                    title: 'Sub-task',
+                    color: 'text-gray-700',
+                    content: 'A Sub-task is a smaller, technical piece of work required to complete a Story, Task, or Bug. It breaks down the work into manageable steps for the developers.',
+                    analogy: 'A Sub-task is a **single sentence or action** needed to write a paragraph.',
+                    example: '(For the login story) Create UI, Build backend API, Write automated tests.'
+                },
+                 'hierarchy-task': {
+                    title: 'Task',
+                    color: 'text-green-700',
+                    content: `A Task is a piece of work that needs to be done but isn't a direct user-facing feature. It's often technical or administrative.`,
+                    analogy: 'A Task is an **action item**, like "research a new illustration style" for the book.',
+                    example: 'Set up a new database server, Research third-party payment gateways.'
+                },
+                'hierarchy-bug': {
+                    title: 'Bug',
+                    color: 'text-red-700',
+                    content: `A Bug is a defect or problem that prevents the software from working as intended. It represents something that is broken.`,
+                    analogy: 'A Bug is a **typo or printing error** found in the book.',
+                    example: 'Login button is not working on the Safari browser.'
+                }
+            };
+            
+            hierarchyItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const detailKey = item.id;
+                    const details = hierarchyDetailsContent[detailKey];
+                    
+                    hierarchyItems.forEach(i => i.classList.remove('ring-2', 'ring-offset-2', 'ring-blue-400'));
+                    item.classList.add('ring-2', 'ring-offset-2', 'ring-blue-400');
+
+                    detailsPane.innerHTML = `
+                        <h4 class="text-2xl font-bold ${details.color}">${details.title}</h4>
+                        <p class="mt-2 text-slate-600">${details.content}</p>
+                        <div class="mt-4 p-3 bg-slate-50 rounded-lg">
+                            <p class="text-sm text-slate-500"><em>Analogy:</em></p>
+                            <p class="font-medium text-slate-700">${details.analogy.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>
+                        </div>
+                        <div class="mt-4 p-3 bg-slate-50 rounded-lg">
+                            <p class="text-sm text-slate-500"><em>Example:</em></p>
+                            <p class="font-mono text-sm text-slate-700">${details.example}</p>
+                        </div>
+                    `;
+                });
+            });
+
+            const issueTabBtns = document.querySelectorAll('.issue-tab-btn');
+            const issueTemplates = document.querySelectorAll('.issue-template');
+
+            issueTabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetId = btn.dataset.target;
+
+                    issueTabBtns.forEach(b => {
+                        b.classList.remove('border-blue-500', 'text-blue-600');
+                        b.classList.add('border-transparent', 'text-slate-500');
+                    });
+                    
+                    btn.classList.add('border-blue-500', 'text-blue-600');
+                    btn.classList.remove('border-transparent', 'text-slate-500');
+
+                    issueTemplates.forEach(template => {
+                        if (template.id === targetId) {
+                            template.classList.remove('hidden');
+                        } else {
+                            template.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const ctx = document.getElementById('workflowChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Our Sprint Goal'],
+                    datasets: [
+                        {
+                            label: 'To Do',
+                            data: [35],
+                            backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'In Progress',
+                            data: [40],
+                            backgroundColor: 'rgba(251, 191, 36, 0.7)',
+                            borderColor: 'rgba(251, 191, 36, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Done',
+                            data: [25],
+                            backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                            borderColor: 'rgba(34, 197, 94, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Visualizing Progress: From To Do to Done'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}% of sprint work (example)`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Percentage of Sprint Work'
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
